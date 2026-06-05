@@ -42,12 +42,12 @@ export function FileDropzone({ onFileSelect, disabled }: FileDropzoneProps) {
     <div
       {...getRootProps()}
       className={cn(
-        'relative border-2 border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300',
+        'relative border border-dashed rounded-2xl p-8 text-center cursor-pointer transition-all duration-300',
         isDragActive
-          ? 'border-violet-500 bg-violet-500/10 scale-[1.02]'
-          : 'border-white/20 hover:border-violet-500/50 hover:bg-white/[0.02]',
+          ? 'border-accent bg-accent/5 border-solid'
+          : 'border-border hover:border-border-strong hover:bg-surface-1',
         disabled && 'opacity-50 cursor-not-allowed',
-        selectedFile && 'border-emerald-500/50 bg-emerald-500/5'
+        selectedFile && 'border-emerald-500/40 bg-surface-1 border-solid'
       )}
     >
       <input {...getInputProps()} id="pdf-file-input" />
@@ -88,13 +88,13 @@ export function FileDropzone({ onFileSelect, disabled }: FileDropzoneProps) {
               animate={isDragActive ? { scale: 1.1, rotate: 5 } : { scale: 1, rotate: 0 }}
               transition={{ type: 'spring', stiffness: 300 }}
             >
-              <Upload className="w-8 h-8 text-violet-400" />
+              <Upload className="w-7 h-7 text-foreground-muted" />
             </motion.div>
             <div>
-              <p className="font-medium text-white">
-                {isDragActive ? 'Drop it here!' : 'Drag & drop your PDF'}
+              <p className="font-medium text-foreground text-sm">
+                {isDragActive ? 'Release to upload' : 'Drag & drop your PDF'}
               </p>
-              <p className="text-sm text-zinc-500 mt-1">or click to browse &middot; max 10MB</p>
+              <p className="text-xs text-foreground-subtle mt-1">or click to browse &middot; max 10MB</p>
             </div>
           </motion.div>
         )}

@@ -18,20 +18,24 @@ export function ShinyButton({ children, onClick, className, disabled, type = 'bu
       type={type}
       disabled={disabled}
       className={cn(
-        'relative overflow-hidden rounded-xl px-8 py-3 font-semibold text-primary-foreground text-sm',
-        'bg-primary transition-all duration-300',
-        'before:absolute before:inset-0 before:-translate-x-full',
-        'hover:before:translate-x-full before:duration-1000 before:ease-fluid',
-        'before:bg-gradient-to-r before:from-transparent before:via-white/25 before:to-transparent',
-        'disabled:opacity-40 disabled:cursor-not-allowed disabled:hover:before:translate-x-[-100%] disabled:hover:shadow-none disabled:hover:-translate-y-0',
-        'hover:shadow-glow-sm',
+        'relative overflow-hidden rounded-xl px-8 py-3 text-sm btn-primary',
         className
       )}
       whileHover={disabled ? {} : { y: -1 }}
-      whileTap={disabled ? {} : { y: 1, scale: 0.98 }}
+      whileTap={disabled ? {} : { y: 0, scale: 0.99 }}
+      transition={{ type: 'spring', stiffness: 500, damping: 30 }}
       onClick={onClick}
     >
-      <span className="relative z-10">{children}</span>
+      {/* Slow shimmer sweep */}
+      <motion.span
+        className="absolute inset-0 pointer-events-none"
+        initial={{ x: '-100%' }}
+        whileHover={{ x: '200%' }}
+        transition={{ duration: 1.0, ease: [0.4, 0, 0.2, 1] }}
+      >
+        <span className="block h-full w-1/2 bg-gradient-to-r from-transparent via-white/20 to-transparent skew-x-12" />
+      </motion.span>
+      <span className="relative z-10 flex items-center justify-center gap-2">{children}</span>
     </motion.button>
   )
 }

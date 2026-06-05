@@ -17,7 +17,7 @@ export function QuizResults({ onSwitchToFlashcards }: QuizResultsProps) {
 
   const getGrade = () => {
     if (percentage >= 90) return { label: 'Excellent!', color: 'text-emerald-400' }
-    if (percentage >= 70) return { label: 'Good Job!', color: 'text-primary' }
+    if (percentage >= 70) return { label: 'Good Job!', color: 'text-emerald-400' }
     if (percentage >= 50) return { label: 'Keep Going!', color: 'text-amber' }
     return { label: 'Keep Studying', color: 'text-red-400' }
   }
@@ -61,7 +61,7 @@ export function QuizResults({ onSwitchToFlashcards }: QuizResultsProps) {
           <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(0 0% 14%)" strokeWidth="8" />
           <motion.circle
             cx="50" cy="50" r="42" fill="none"
-            stroke="hsl(245 85% 62%)"
+            stroke="hsl(var(--accent))"
             strokeWidth="8"
             strokeLinecap="round"
             strokeDasharray={circumference}

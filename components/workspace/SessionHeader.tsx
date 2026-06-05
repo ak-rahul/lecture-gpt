@@ -4,6 +4,7 @@ import { ArrowLeft, FileText, BookOpen } from 'lucide-react'
 import { useFlashcardStore } from '@/store/flashcard.store'
 import type { LectureSession } from '@/types/session.types'
 import { formatWordCount } from '@/lib/utils'
+import { AnimatedNumber } from '@/components/shared/AnimatedNumber'
 
 interface SessionHeaderProps {
   session: LectureSession
@@ -15,8 +16,6 @@ export function SessionHeader({ session }: SessionHeaderProps) {
 
   const knownCount = knownIds.size
   const totalCards = cards.length
-  const progress = totalCards > 0 ? Math.round((knownCount / totalCards) * 100) : 0
-  const circumference = 2 * Math.PI * 9
 
   return (
     <div className="border-b border-border bg-background/95 backdrop-blur-sm">
@@ -25,15 +24,14 @@ export function SessionHeader({ session }: SessionHeaderProps) {
         <button
           onClick={() => router.push('/')}
           aria-label="Back to home"
-          className="p-2 rounded-lg hover:bg-surface-1 text-foreground-muted hover:text-foreground transition-all flex-shrink-0"
+          className="flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface-1 transition-all text-xs font-medium"
         >
-          <ArrowLeft className="w-4 h-4" />
+          <ArrowLeft className="w-3.5 h-3.5" />
+          <span className="hidden md:inline">Home</span>
         </button>
 
         <div className="flex items-center gap-2 flex-1 min-w-0">
-          <div className="p-1.5 rounded-md bg-surface-2 flex-shrink-0">
-            <FileText className="w-3.5 h-3.5 text-foreground-muted" />
-          </div>
+          <FileText className="w-3.5 h-3.5 text-foreground-muted" />
           <h1 className="text-sm font-semibold text-foreground truncate">{session.documentTitle}</h1>
           <span className={`flex-shrink-0 text-[10px] font-semibold px-1.5 py-0.5 rounded uppercase tracking-wide ${
             session.sourceType === 'pdf'
@@ -46,20 +44,11 @@ export function SessionHeader({ session }: SessionHeaderProps) {
 
         {/* Flashcard progress ring */}
         {totalCards > 0 && (
-          <div className="flex items-center gap-2 flex-shrink-0">
-            <svg width="24" height="24" viewBox="0 0 24 24" className="-rotate-90">
-              <circle cx="12" cy="12" r="9" fill="none" stroke="hsl(0 0% 14%)" strokeWidth="2" />
-              <circle
-                cx="12" cy="12" r="9" fill="none"
-                stroke="hsl(245 85% 62%)"
-                strokeWidth="2"
-                strokeLinecap="round"
-                strokeDasharray={circumference}
-                strokeDashoffset={circumference * (1 - progress / 100)}
-                className="transition-all duration-500"
-              />
-            </svg>
-            <span className="text-xs text-foreground-muted tabular-nums">{knownCount}/{totalCards}</span>
+          <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg bg-surface-1 border border-border">
+            <BookOpen className="w-3 h-3 text-foreground-subtle" />
+            <span className="text-xs text-foreground-muted font-medium">
+              <AnimatedNumber value={knownCount} suffix=" cards" />
+            </span>
           </div>
         )}
 

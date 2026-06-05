@@ -41,34 +41,29 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
 
   const handleShortAnswerSubmit = async () => {
     if (!shortAnswer.trim() || question.type !== 'short_answer') return
-    
-    // BUG FIX 7: Heuristic scoring against key_points
-    const answerLower = shortAnswer.toLowerCase()
-    let pointsMatched = 0
-    question.key_points.forEach(point => {
-      if (answerLower.includes(point.toLowerCase())) {
-        pointsMatched++
-      }
-    })
-    
-    // Scale points to 0-2 score based on ratio
-    const ratio = pointsMatched / Math.max(question.key_points.length, 1)
-    let score = 0
-    if (ratio >= 0.8) score = 2
-    else if (ratio >= 0.4) score = 1
-    
-    let message = ''
-    if (score === 2) message = `Excellent! Sample answer: ${question.sample_answer}`
-    else if (score === 1) message = `Good, but missing some details. Sample answer: ${question.sample_answer}`
-    else message = `Needs more detail. Sample answer: ${question.sample_answer}`
-
     setSubmitted(true)
-    setFeedback({ score, message })
+
+    // Keyword-based scoring against key_points array
+    const answer = shortAnswer.toLowerCase()
+    const keyPoints: string[] = question.key_points || []
+    const matched = keyPoints.filter(kp =>
+      kp.toLowerCase().split(' ').some(word => word.length > 3 && answer.includes(word))
+    )
+    const scoreRatio = keyPoints.length > 0 ? matched.length / keyPoints.length : 0.5
+    const score = scoreRatio >= 0.6 ? 2 : scoreRatio >= 0.3 ? 1 : 0
+
+    const feedbackMessages = {
+      2: `Great answer! You covered the key points.`,
+      1: `Partially correct. Sample answer: ${question.sample_answer}`,
+      0: `Not quite. Sample answer: ${question.sample_answer}`,
+    }
+
+    setFeedback({ score, message: feedbackMessages[score as 0 | 1 | 2] })
     submitAnswer({
       questionId: question.id,
       answer: shortAnswer,
       score,
-      feedback: message,
+      feedback: feedbackMessages[score as 0 | 1 | 2],
     })
   }
 
@@ -90,17 +85,13 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
       transition={{ duration: 0.3 }}
     >
       {/* Question */}
-      <div className="p-5 rounded-2xl bg-white/[0.03] border border-white/10">
+      <div className="p-5 rounded-2xl bg-surface-1 border border-border">
         <div className="flex items-center gap-2 mb-3">
-          <span className={`text-xs px-2 py-0.5 rounded-full border font-medium ${
-            question.type === 'mcq'
-              ? 'bg-blue-500/10 text-blue-400 border-blue-500/20'
-              : 'bg-purple-500/10 text-purple-400 border-purple-500/20'
-          }`}>
+          <span className="text-[10px] px-2 py-0.5 rounded-full border bg-surface-2 border-border text-foreground-subtle uppercase tracking-wider font-semibold">
             {question.type === 'mcq' ? 'Multiple Choice' : 'Short Answer'}
           </span>
         </div>
-        <p className="text-white font-medium leading-relaxed">{question.question}</p>
+        <p className="text-foreground font-medium leading-relaxed">{question.question}</p>
       </div>
 
       {/* MCQ Options */}
@@ -109,14 +100,14 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
           {question.options.map((option, index) => {
             const isSelected = selectedOption === index
             const isCorrect = index === question.correct
-            let optionStyle = 'border-white/10 text-zinc-300 hover:border-white/20 hover:bg-white/[0.02]'
+            let optionStyle = 'border-border bg-surface-1 text-foreground-muted hover:border-border-strong hover:bg-surface-2 hover:text-foreground'
             
             if (submitted) {
-              if (isCorrect) optionStyle = 'border-emerald-500/50 bg-emerald-500/10 text-emerald-300'
-              else if (isSelected && !isCorrect) optionStyle = 'border-red-500/50 bg-red-500/10 text-red-300'
-              else optionStyle = 'border-white/5 text-zinc-600 opacity-60'
+              if (isCorrect) optionStyle = 'border-emerald-500/50 bg-emerald-500/10 text-emerald-400'
+              else if (isSelected && !isCorrect) optionStyle = 'border-red-500/50 bg-red-500/10 text-red-400'
+              else optionStyle = 'border-border bg-surface-1 text-foreground-subtle opacity-60'
             } else if (isSelected) {
-              optionStyle = 'border-violet-500/50 bg-violet-500/10 text-violet-300'
+              optionStyle = 'border-accent/50 bg-accent/10 text-accent'
             }
 
             return (
@@ -154,7 +145,7 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
             placeholder="Type your answer here..."
             disabled={submitted}
             rows={4}
-            className="w-full p-4 rounded-xl bg-white/[0.03] border border-white/10 text-white placeholder:text-zinc-600 text-sm focus:outline-none focus:ring-2 focus:ring-violet-500/50 resize-none disabled:opacity-60"
+            className="w-full p-4 rounded-xl bg-surface-1 border border-border text-foreground placeholder:text-foreground-subtle text-sm focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent/50 resize-none disabled:opacity-50"
           />
         </div>
       )}
@@ -191,7 +182,7 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
         <button
           id="quiz-next-button"
           onClick={handleNext}
-          className="w-full py-3 rounded-xl border border-white/10 text-white hover:bg-white/[0.04] transition-all flex items-center justify-center gap-2 font-medium"
+          className="w-full py-3 rounded-xl border border-border text-foreground hover:bg-surface-2 hover:border-border-strong transition-all flex items-center justify-center gap-2 font-medium"
         >
           Next Question
           <ChevronRight className="w-4 h-4" />

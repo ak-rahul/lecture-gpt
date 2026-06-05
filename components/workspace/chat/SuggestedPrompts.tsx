@@ -47,7 +47,7 @@ export function SuggestedPrompts({ onSelect, documentTitle }: SuggestedPromptsPr
           <button
             key={prompt.label}
             onClick={() => onSelect(prompt.full)}
-            className="flex flex-col items-start gap-2 p-3 rounded-xl bg-surface-1 border border-border hover:border-border-strong hover:bg-surface-2 transition-all duration-200 text-left group"
+            className="flex flex-col items-start gap-2 p-3 rounded-xl bg-surface-1 border border-border hover:border-border-strong hover:bg-surface-2 transition-all duration-150 text-left group"
           >
             <prompt.icon className="w-4 h-4 text-foreground-subtle group-hover:text-primary transition-colors" />
             <span className="text-xs font-medium text-foreground-muted group-hover:text-foreground transition-colors">

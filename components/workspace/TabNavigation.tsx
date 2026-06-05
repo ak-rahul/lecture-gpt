@@ -34,14 +34,14 @@ export function TabNavigation({ activeTab, onTabChange }: TabNavigationProps) {
             aria-selected={activeTab === tab.id}
             role="tab"
             className={cn(
-              'relative flex items-center gap-2 px-3 sm:px-4 py-2 rounded-lg text-sm font-medium transition-colors duration-200 z-10',
+              'relative flex items-center gap-1.5 px-4 py-2 rounded-lg text-xs font-medium transition-colors duration-150 z-10',
               activeTab === tab.id ? 'text-foreground' : 'text-foreground-muted hover:text-foreground'
             )}
           >
             {activeTab === tab.id && (
               <motion.div
-                layoutId="tab-bg"
-                className="absolute inset-0 rounded-lg bg-surface-3 border border-border-strong shadow-card"
+                layoutId="tab-pill"
+                className="absolute inset-0 rounded-lg bg-surface-3 border border-border-strong"
                 transition={{ type: 'spring', bounce: 0.15, duration: 0.35 }}
               />
             )}

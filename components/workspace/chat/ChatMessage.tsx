@@ -11,8 +11,8 @@ export function ChatMessage({ message }: ChatMessageProps) {
   if (isUser) {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[75%] px-4 py-2.5 rounded-2xl rounded-br-sm bg-surface-2 border border-border text-sm text-foreground">
-          {message.content}
+        <div className="max-w-[75%] px-4 py-3 rounded-2xl rounded-tr-sm bg-surface-2 border border-border">
+          <p className="text-sm text-foreground leading-relaxed">{message.content}</p>
         </div>
       </div>
     )
@@ -21,10 +21,10 @@ export function ChatMessage({ message }: ChatMessageProps) {
   return (
     <div className="flex gap-3">
       {/* LG monogram mark */}
-      <div className="flex-shrink-0 w-7 h-7 rounded-lg bg-primary/15 border border-primary/25 flex items-center justify-center mt-0.5">
-        <span className="text-[9px] font-black text-primary tracking-widest">LG</span>
+      <div className="flex-shrink-0 w-6 h-6 rounded-md bg-surface-2 border border-border flex items-center justify-center mt-0.5">
+        <span className="text-[9px] font-bold text-foreground-subtle">AI</span>
       </div>
-      <div className="flex-1 border-l-2 border-primary/25 pl-4 min-w-0">
+      <div className="flex-1 min-w-0">
         <MarkdownRenderer content={message.content} />
       </div>
     </div>

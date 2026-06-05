@@ -25,9 +25,9 @@ export function FlashcardItem({ card, isFlipped, onFlip, onClick, current, total
       onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (onClick) onClick(); else if (onFlip) onFlip(); } }}
       aria-label={isFlipped ? 'Flip card to front' : 'Flip card to see answer'}
     >
-      <div className={`flashcard-inner w-full min-h-[240px] relative ${isFlipped ? 'flipped' : ''}`}>
+      <div className={`flashcard-inner w-full relative ${isFlipped ? 'flipped' : ''}`} style={{ minHeight: '240px' }}>
         {/* Front */}
-        <div className="flashcard-face absolute inset-0 rounded-2xl bg-surface-1 border border-border p-6 flex flex-col">
+        <div className="flashcard-face absolute inset-0 rounded-2xl bg-surface-1 border border-border p-6 text-center flex flex-col">
           {/* Top indicators */}
           <div className="flex items-center justify-between mb-4">
             <span className="font-mono text-xs text-foreground-subtle tabular-nums">
@@ -39,7 +39,7 @@ export function FlashcardItem({ card, isFlipped, onFlip, onClick, current, total
           </div>
 
           {/* Accent bar */}
-          <div className="w-10 h-0.5 bg-gradient-to-r from-primary to-transparent rounded-full mb-5" />
+          <div className="w-8 h-0.5 bg-accent/40 rounded-full mb-5" />
 
           {/* Question */}
           <div className="flex-1 flex items-center justify-center">
@@ -54,7 +54,7 @@ export function FlashcardItem({ card, isFlipped, onFlip, onClick, current, total
         </div>
 
         {/* Back */}
-        <div className="flashcard-face flashcard-back absolute inset-0 rounded-2xl bg-surface-2 border border-primary/20 p-6 flex flex-col">
+        <div className="flashcard-face flashcard-back absolute inset-0 rounded-2xl bg-surface-2 border border-border-strong p-6 text-center flex flex-col">
           <div className="flex items-center justify-between mb-4">
             <span className="font-mono text-xs text-foreground-subtle tabular-nums">{current} / {total}</span>
             <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
@@ -62,7 +62,7 @@ export function FlashcardItem({ card, isFlipped, onFlip, onClick, current, total
             </span>
           </div>
 
-          <div className="w-10 h-0.5 bg-gradient-to-r from-primary to-transparent rounded-full mb-5" />
+          <div className="w-8 h-0.5 bg-accent/40 rounded-full mb-5" />
 
           <div className="flex-1 flex items-start justify-center">
             <p className="text-sm text-foreground leading-relaxed text-center">{card.back}</p>

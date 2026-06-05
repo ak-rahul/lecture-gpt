@@ -1,20 +1,20 @@
-import { FileQuestion } from 'lucide-react'
+import { LucideIcon } from 'lucide-react'
 
 interface EmptyStateProps {
-  icon?: React.ElementType
+  icon: LucideIcon
   title: string
   description: string
   action?: React.ReactNode
 }
 
-export function EmptyState({ icon: Icon = FileQuestion, title, description, action }: EmptyStateProps) {
+export function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
-    <div className="flex flex-col items-center justify-center p-8 text-center h-full min-h-[300px]">
-      <div className="w-16 h-16 rounded-2xl bg-surface-2 border border-border flex items-center justify-center mb-6">
-        <Icon className="w-8 h-8 text-foreground-muted" />
+    <div className="flex flex-col items-center justify-center py-16 px-6 text-center">
+      <div className="p-3 rounded-xl bg-surface-2 border border-border mb-4">
+        <Icon className="w-6 h-6 text-foreground-subtle" />
       </div>
-      <h3 className="text-lg font-semibold text-foreground mb-2">{title}</h3>
-      <p className="text-sm text-foreground-subtle max-w-sm mb-6">{description}</p>
+      <h3 className="text-sm font-semibold text-foreground mb-1.5">{title}</h3>
+      <p className="text-xs text-foreground-muted max-w-xs leading-relaxed mb-5">{description}</p>
       {action}
     </div>
   )

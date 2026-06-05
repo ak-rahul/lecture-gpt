@@ -1,6 +1,6 @@
 import { cn } from '@/lib/utils'
 
-type GradientVariant = 'primary' | 'mixed' | 'amber' | 'mono'
+type GradientVariant = 'accent' | 'white'
 
 interface GradientTextProps {
   children: React.ReactNode
@@ -8,16 +8,12 @@ interface GradientTextProps {
   variant?: GradientVariant
 }
 
-export function GradientText({ children, className, variant = 'primary' }: GradientTextProps) {
-  const variants: Record<GradientVariant, string> = {
-    primary: 'gradient-text-primary',
-    mixed: 'gradient-text-mixed',
-    amber: 'gradient-text-amber',
-    mono: 'text-foreground',
-  }
-
+export function GradientText({ children, className, variant = 'accent' }: GradientTextProps) {
   return (
-    <span className={cn(variants[variant], className)}>
+    <span className={cn(
+      variant === 'accent' ? 'text-gradient' : 'text-gradient-white',
+      className
+    )}>
       {children}
     </span>
   )

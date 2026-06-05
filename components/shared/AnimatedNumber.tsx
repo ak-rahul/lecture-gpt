@@ -11,15 +11,11 @@ interface AnimatedNumberProps {
 
 export function AnimatedNumber({ value, suffix = '', className, duration = 800 }: AnimatedNumberProps) {
   const [display, setDisplay] = useState(0)
-  const hasAnimated = useRef(false)
+  const hasRun = useRef(false)
 
   useEffect(() => {
-    if (value === 0 || hasAnimated.current) {
-      if (hasAnimated.current) setDisplay(value)
-      return
-    }
-    
-    hasAnimated.current = true
+    if (value === 0 || hasRun.current) return
+    hasRun.current = true
     const steps = 30
     const increment = value / steps
     let current = 0

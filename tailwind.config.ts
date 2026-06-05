@@ -11,52 +11,52 @@ const config: Config = {
   theme: {
     extend: {
       colors: {
-        background: "hsl(var(--background))",
-        foreground: {
-          DEFAULT: "hsl(var(--foreground))",
-          muted: "hsl(var(--foreground-muted))",
-          subtle: "hsl(var(--foreground-subtle))",
-        },
+        background:  "hsl(var(--background))",
+        foreground:  "hsl(var(--foreground))",
+        "foreground-muted":  "hsl(var(--foreground-muted))",
+        "foreground-subtle": "hsl(var(--foreground-subtle))",
         surface: {
           1: "hsl(var(--surface-1))",
           2: "hsl(var(--surface-2))",
           3: "hsl(var(--surface-3))",
         },
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(0 0% 100%)",
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          hover:   "hsl(var(--accent-hover))",
+          text:    "hsl(var(--accent-text))",
         },
-        amber: "hsl(var(--amber))",
-        border: {
-          DEFAULT: "hsl(var(--border))",
-          strong: "hsl(var(--border-strong))",
-        },
+        border: "hsl(var(--border))",
+        "border-muted":  "hsl(var(--border-muted))",
+        "border-strong": "hsl(var(--border-strong))",
+        // keep shadcn compat tokens
+        card:       { DEFAULT: "hsl(var(--surface-1))", foreground: "hsl(var(--foreground))" },
+        primary:    { DEFAULT: "hsl(var(--accent))", foreground: "0 0% 100%" },
+        muted:      { DEFAULT: "hsl(var(--surface-1))", foreground: "hsl(var(--foreground-muted))" },
+        ring:       "hsl(var(--accent))",
+        input:      "hsl(var(--surface-1))",
+      },
+      borderRadius: {
+        sm: "calc(var(--radius) - 4px)",
+        md: "calc(var(--radius) - 2px)",
+        lg: "var(--radius)",
+        xl: "calc(var(--radius) + 4px)",
       },
       fontFamily: {
-        display: ["var(--font-display)", "serif"],
-        sans: ["var(--font-sans)", "sans-serif"],
-        mono: ["var(--font-mono)", "monospace"],
-      },
-      boxShadow: {
-        'glow-sm': '0 0 10px rgba(91, 91, 214, 0.2)',
-        'glow': '0 0 20px rgba(91, 91, 214, 0.3)',
-        'glow-lg': '0 0 30px rgba(91, 91, 214, 0.4)',
-        'card': '0 4px 20px -2px rgba(0, 0, 0, 0.5)',
-        'card-hover': '0 8px 30px -4px rgba(0, 0, 0, 0.6)',
-        'float': '0 10px 40px -10px rgba(0, 0, 0, 0.5)',
-      },
-      transitionTimingFunction: {
-        'fluid': 'cubic-bezier(0.19, 1, 0.22, 1)',
+        sans: ["var(--font-sans)", "Geist", "system-ui", "sans-serif"],
+        mono: ["var(--font-mono)", "Geist Mono", "monospace"],
       },
       animation: {
-        'pulse-soft': 'pulse-soft 3s ease-in-out infinite',
+        "fade-up":   "fade-up 0.45s ease-out forwards",
+        "fade-in":   "fade-in 0.35s ease-out forwards",
+        "scale-in":  "scale-in 0.3s cubic-bezier(0.34,1.56,0.64,1) forwards",
+        "spin-slow": "spin-slow 3s linear infinite",
       },
-      keyframes: {
-        'pulse-soft': {
-          '0%, 100%': { opacity: '0.6', transform: 'scale(0.95)' },
-          '50%': { opacity: '1', transform: 'scale(1.05)' },
-        }
-      }
+      boxShadow: {
+        "glow":    "0 0 24px var(--glow-accent)",
+        "glow-sm": "0 0 12px var(--glow-accent)",
+        "card":    "0 1px 3px rgba(0,0,0,0.4)",
+        "float":   "0 8px 32px rgba(0,0,0,0.6)",
+      },
     },
   },
   plugins: [require("tailwindcss-animate")],

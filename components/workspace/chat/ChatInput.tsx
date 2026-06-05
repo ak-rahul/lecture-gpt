@@ -52,10 +52,10 @@ export function ChatInput({ onSend, isStreaming, disabled }: ChatInputProps) {
           disabled={disabled || isStreaming}
           rows={1}
           className={cn(
-            'flex-1 resize-none rounded-xl bg-white/[0.04] border border-white/10',
-            'px-4 py-3 text-sm text-white placeholder:text-zinc-600',
-            'focus:outline-none focus:ring-2 focus:ring-violet-500/50 focus:border-violet-500/30',
-            'disabled:opacity-50 transition-all duration-200',
+            'flex-1 resize-none rounded-xl bg-surface-1 border border-border',
+            'px-4 py-3 text-sm text-foreground placeholder:text-foreground-subtle',
+            'focus:outline-none focus:ring-1 focus:ring-accent focus:border-accent/50',
+            'disabled:opacity-40 transition-all duration-200',
             'min-h-[44px] max-h-[200px]'
           )}
         />
@@ -66,8 +66,8 @@ export function ChatInput({ onSend, isStreaming, disabled }: ChatInputProps) {
           className={cn(
             'p-3 rounded-xl flex-shrink-0 transition-all duration-200',
             value.trim() && !isStreaming
-              ? 'bg-violet-600 hover:bg-violet-500 text-white'
-              : 'bg-white/[0.04] border border-white/10 text-zinc-600 cursor-not-allowed'
+              ? 'bg-accent hover:bg-accent-hover text-white'
+              : 'bg-surface-1 border border-border text-foreground-subtle cursor-not-allowed'
           )}
           whileHover={value.trim() && !isStreaming ? { scale: 1.05 } : {}}
           whileTap={value.trim() && !isStreaming ? { scale: 0.95 } : {}}

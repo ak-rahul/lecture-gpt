@@ -1,52 +1,37 @@
 'use client'
-import { motion } from 'framer-motion'
-import { ExternalLink, BookOpen } from 'lucide-react'
 import Link from 'next/link'
-import { GradientText } from '@/components/shared/GradientText'
+import { ExternalLink } from 'lucide-react'
 
 export function Navbar() {
   return (
-    <motion.nav
-      className="fixed top-0 left-0 right-0 z-50 border-b border-white/[0.06] bg-black/40 backdrop-blur-xl"
-      initial={{ y: -100, opacity: 0 }}
-      animate={{ y: 0, opacity: 1 }}
-      transition={{ duration: 0.5, ease: 'easeOut' }}
-    >
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-16">
-          {/* Logo */}
-          <Link href="/" className="flex items-center gap-2 group">
-            <div className="p-1.5 rounded-lg bg-violet-500/20 border border-violet-500/30 group-hover:bg-violet-500/30 transition-colors">
-              <BookOpen className="w-4 h-4 text-violet-400" />
-            </div>
-            <span className="font-bold text-lg">
-              <GradientText>LectureGPT</GradientText>
-            </span>
-          </Link>
+    <nav className="fixed top-0 inset-x-0 z-50 h-14 flex items-center border-b border-border-muted bg-background/80 backdrop-blur-2xl">
+      <div className="max-w-6xl mx-auto px-4 sm:px-6 w-full flex items-center justify-between">
 
-          {/* Nav Links */}
-          <div className="hidden md:flex items-center gap-6">
-            <a href="#features" className="text-sm text-zinc-400 hover:text-white transition-colors">Features</a>
-            <a href="#how-it-works" className="text-sm text-zinc-400 hover:text-white transition-colors">How It Works</a>
-          </div>
+        {/* Wordmark — no icon, no gradient */}
+        <Link href="/" className="flex items-center gap-1.5 group">
+          <span className="font-bold text-base tracking-tight text-white">
+            Lecture<span className="text-accent">GPT</span>
+          </span>
+        </Link>
 
-          {/* Actions */}
-          <div className="flex items-center gap-3">
-            <a
-              href="https://github.com"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-lg text-zinc-400 hover:text-white hover:bg-white/5 transition-all"
-            >
-              <ExternalLink className="w-3.5 h-3.5" />
-            </a>
-            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/10 border border-emerald-500/20">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
-              <span className="text-xs text-emerald-400 font-medium">Groq Powered</span>
-            </div>
+        {/* Right */}
+        <div className="flex items-center gap-2">
+          <a
+            href="https://github.com"
+            target="_blank"
+            rel="noopener noreferrer"
+            aria-label="View source on GitHub"
+            className="p-2 rounded-lg text-foreground-muted hover:text-foreground hover:bg-surface-1 transition-all"
+          >
+            <ExternalLink className="w-3.5 h-3.5" />
+          </a>
+          <div className="h-4 w-px bg-border mx-1" />
+          <div className="badge badge-neutral">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={{ animation: 'pulse-dot 2s ease-in-out infinite' }} />
+            Groq
           </div>
         </div>
       </div>
-    </motion.nav>
+    </nav>
   )
 }

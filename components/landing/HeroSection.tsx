@@ -129,8 +129,7 @@ function UploadCard() {
       if (timeoutRef.current) clearTimeout(timeoutRef.current)
 
       setProcessingStage('done', '')
-      // Show done state for 800ms before routing (BUG FIX 4)
-      await new Promise(resolve => setTimeout(resolve, 800))
+      await new Promise(resolve => setTimeout(resolve, 900)) // show done state for 900ms
       router.push(`/study/${sessionId}`)
     } catch (err) {
       console.error(err)
@@ -225,70 +224,43 @@ export function HeroSection() {
   const { processingStage, processingMessage } = useSessionStore()
 
   return (
-    <section className="aurora-bg grid-overlay noise-overlay min-h-screen flex flex-col items-center justify-center pt-14 pb-16 px-4">
-      <div className="relative z-10 flex flex-col items-center max-w-3xl mx-auto w-full">
-        {/* Badge */}
-        <motion.div
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="badge-glow mb-8"
-        >
-          <span className="text-primary">✦</span>
-          Built for QuAnHack 2026
-        </motion.div>
+    <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-16 overflow-hidden hero-glow noise">
+      <div className="absolute inset-0 grid-bg opacity-100 pointer-events-none" />
 
-        {/* Headline */}
-        <motion.div
-          initial={{ opacity: 0, y: 16 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.08 }}
-          className="text-center mb-4"
-        >
-          <h1 className="text-hero font-display italic text-foreground mb-2">
-            Turn Any Lecture Into Your
-          </h1>
-          <h1 className="text-hero font-bold gradient-text-mixed">
-            Study Brain
-          </h1>
-        </motion.div>
+      {/* Badge */}
+      <div className="badge badge-accent mb-8 animate-fade-up opacity-0">
+        ✦ Built for QuAnHack 2026
+      </div>
 
-        {/* Sub */}
-        <motion.p
-          initial={{ opacity: 0, y: 12 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.14 }}
-          className="text-foreground-muted text-base text-center mb-10 max-w-md"
-        >
-          Upload a PDF or YouTube lecture. Get flashcards, quizzes, a concept map, and an AI tutor — all in under 60 seconds.
-        </motion.p>
+      {/* Headline */}
+      <h1 className="text-5xl md:text-[72px] font-black leading-[1.05] tracking-tight text-center max-w-4xl mb-5 animate-fade-up opacity-0 delay-100">
+        Turn Any Lecture Into Your{' '}
+        <span className="text-gradient">Study Brain</span>
+      </h1>
 
-        {/* Upload card */}
-        <motion.div
-          initial={{ opacity: 0, y: 20 }}
-          animate={{ opacity: 1, y: 0 }}
-          transition={{ delay: 0.2 }}
-          className="w-full mb-10"
-        >
-          <UploadCard />
-        </motion.div>
+      {/* Subheading */}
+      <p className="text-base md:text-lg text-foreground-muted text-center max-w-xl mb-10 leading-relaxed animate-fade-up opacity-0 delay-200">
+        Upload a PDF or YouTube lecture. Get flashcards, a quiz, a concept map,
+        and an AI tutor — in under 60 seconds.
+      </p>
 
-        {/* Stats row */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          animate={{ opacity: 1 }}
-          transition={{ delay: 0.3 }}
-          className="flex items-center gap-3 flex-wrap justify-center"
-        >
-          {stats.map(stat => (
-            <div key={stat.label} className="flex flex-col items-center gap-1 px-5 py-3 rounded-xl bg-surface-1 border border-border min-w-[80px]">
-              <stat.icon className="w-3.5 h-3.5 text-foreground-muted" />
-              <span className="text-xl font-bold text-foreground tabular-nums">
-                <AnimatedNumber value={stat.value} suffix={stat.suffix} />
-              </span>
-              <span className="text-[11px] text-foreground-subtle uppercase tracking-wider text-center">{stat.label}</span>
-            </div>
-          ))}
-        </motion.div>
+      {/* Upload card */}
+      <div className="w-full max-w-lg mx-auto z-10 animate-fade-up opacity-0 delay-300">
+        <UploadCard />
+      </div>
+
+      {/* Stats row — REDESIGNED */}
+      <div className="flex items-center gap-3 mt-10 animate-fade-up opacity-0 delay-500 z-10">
+        {[
+          { value: '60s', label: 'Processing time' },
+          { value: '800+', label: 'Tokens / second' },
+          { value: '4', label: 'Study modes' },
+        ].map((stat, i) => (
+          <div key={stat.label} className="flex flex-col items-center px-5 py-3 card rounded-xl min-w-[90px]">
+            <span className="text-xl font-bold text-white tabular-nums">{stat.value}</span>
+            <span className="text-[10px] text-foreground-subtle uppercase tracking-widest mt-0.5">{stat.label}</span>
+          </div>
+        ))}
       </div>
 
       <ProcessingOverlay stage={processingStage} message={processingMessage} />
