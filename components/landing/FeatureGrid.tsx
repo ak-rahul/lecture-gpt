@@ -1,5 +1,4 @@
 'use client'
-import { motion } from 'framer-motion'
 import { MessageSquare, Layers, FileQuestion, Network, Zap, Shield } from 'lucide-react'
 
 const features = [

@@ -2,23 +2,16 @@
 import { useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { Zap, Cpu, LayoutGrid, FileText, Link2 } from 'lucide-react'
+import { FileText, Link2 } from 'lucide-react'
 import { FileDropzone } from '@/components/upload/FileDropzone'
 import { ProcessingOverlay } from '@/components/upload/ProcessingOverlay'
 import { ShinyButton } from '@/components/shared/ShinyButton'
-import { AnimatedNumber } from '@/components/shared/AnimatedNumber'
 import { useSessionStore } from '@/store/session.store'
 import { isValidYouTubeUrl, cn } from '@/lib/utils'
 import { generateId } from '@/lib/utils'
 import { cleanText, countWords, chunkText, MAX_CHARS_FOR_GENERATION } from '@/lib/text-chunker'
 import type { LectureSession } from '@/types/session.types'
 import { saveSession } from '@/lib/session-storage'
-
-const stats = [
-  { value: 60, suffix: 's', label: 'Processing time', icon: Zap },
-  { value: 800, suffix: '+', label: 'Tokens / second', icon: Cpu },
-  { value: 4, suffix: '', label: 'Study modes', icon: LayoutGrid },
-]
 
 function UploadCard() {
   const router = useRouter()
@@ -67,8 +60,8 @@ function UploadCard() {
         // })
         // if (!res.ok) throw new Error('Transcript fetch failed')
         // const data = await res.json()
-        rawText = cleanText(data.text)
-        documentTitle = data.title || 'YouTube Lecture'
+        // rawText = cleanText(data.text)
+        // documentTitle = data.title || 'YouTube Lecture'
       }
 
       if (!rawText || rawText.length < 100) {
@@ -255,7 +248,7 @@ export function HeroSection() {
           { value: '60s', label: 'Processing time' },
           { value: '800+', label: 'Tokens / second' },
           { value: '4', label: 'Study modes' },
-        ].map((stat, i) => (
+        ].map((stat) => (
           <div key={stat.label} className="flex flex-col items-center px-5 py-3 card rounded-xl min-w-[90px]">
             <span className="text-xl font-bold text-white tabular-nums">{stat.value}</span>
             <span className="text-[10px] text-foreground-subtle uppercase tracking-widest mt-0.5">{stat.label}</span>

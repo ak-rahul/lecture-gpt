@@ -1,6 +1,6 @@
 'use client'
 import { AnimatePresence, motion } from 'framer-motion'
-import { FileText, Layers, FileQuestion, Network, CheckCircle } from 'lucide-react'
+import { FileText, Network, CheckCircle } from 'lucide-react'
 import type { ProcessingStage } from '@/types/session.types'
 import { cn } from '@/lib/utils'
 
