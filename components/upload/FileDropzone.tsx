@@ -13,7 +13,11 @@ interface FileDropzoneProps {
 export function FileDropzone({ onFileSelect, disabled }: FileDropzoneProps) {
   const [selectedFile, setSelectedFile] = useState<File | null>(null)
 
-  const onDrop = useCallback((acceptedFiles: File[]) => {
+  const onDrop = useCallback((acceptedFiles: File[], fileRejections: import('react-dropzone').FileRejection[]) => {
+    if (fileRejections.length > 0) {
+      alert('File too large. Max 10MB.')
+      return
+    }
     const file = acceptedFiles[0]
     if (file) {
       setSelectedFile(file)
@@ -25,6 +29,7 @@ export function FileDropzone({ onFileSelect, disabled }: FileDropzoneProps) {
     onDrop,
     accept: { 'application/pdf': ['.pdf'] },
     maxFiles: 1,
+    maxSize: 10 * 1024 * 1024, // 10MB limit
     disabled,
   })
 

@@ -19,8 +19,10 @@ export function useSession(sessionId: string | null) {
       setCards(session.flashcards || [])
       setQuestions(session.questions || [])
       clearMessages()
-      // Restore chat history
-      session.chatHistory?.forEach(msg => addMessage(msg))
+      // BUG FIX 5: Restore chat history on session load
+      if (session.chatHistory && session.chatHistory.length > 0) {
+        session.chatHistory.forEach(msg => addMessage(msg))
+      }
       return session
     }
     return null

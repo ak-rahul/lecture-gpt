@@ -1,78 +1,115 @@
 'use client'
 import { motion } from 'framer-motion'
-import { Trophy, RefreshCw, Star } from 'lucide-react'
+import { Trophy, RefreshCw, ArrowRight, Layers } from 'lucide-react'
 import { ShinyButton } from '@/components/shared/ShinyButton'
 import { useQuizStore } from '@/store/quiz.store'
+import { useFlashcardStore } from '@/store/flashcard.store'
 
-export function QuizResults() {
-  const { questions, score, reset } = useQuizStore()
+interface QuizResultsProps {
+  onSwitchToFlashcards?: () => void
+}
+
+export function QuizResults({ onSwitchToFlashcards }: QuizResultsProps) {
+  const { questions, answers, score, reset } = useQuizStore()
+  const { cards } = useFlashcardStore()
   const total = questions.length
   const percentage = total > 0 ? Math.round((score / total) * 100) : 0
 
   const getGrade = () => {
-    if (percentage >= 90) return { label: 'Excellent!', color: 'text-emerald-400', stars: 3 }
-    if (percentage >= 70) return { label: 'Good job!', color: 'text-blue-400', stars: 2 }
-    if (percentage >= 50) return { label: 'Keep going!', color: 'text-yellow-400', stars: 1 }
-    return { label: 'Keep studying!', color: 'text-red-400', stars: 0 }
+    if (percentage >= 90) return { label: 'Excellent!', color: 'text-emerald-400' }
+    if (percentage >= 70) return { label: 'Good Job!', color: 'text-primary' }
+    if (percentage >= 50) return { label: 'Keep Going!', color: 'text-amber' }
+    return { label: 'Keep Studying', color: 'text-red-400' }
   }
 
   const grade = getGrade()
 
+  // Find topics of wrong answers
+  const wrongTopics = questions
+    .filter(q => {
+      const ans = answers[q.id]
+      return ans && !ans.isCorrect
+    })
+    .map(q => {
+      const card = cards.find(c => c.front.toLowerCase().includes(q.question.split(' ').slice(0, 3).join(' ').toLowerCase()))
+      return card?.topic || (q.question.length > 40 ? q.question.slice(0, 40) + '...' : q.question)
+    })
+    .filter((v, i, a) => a.indexOf(v) === i)
+    .slice(0, 3)
+
+  const circumference = 2 * Math.PI * 42
+
   return (
     <motion.div
-      className="flex flex-col items-center py-12 px-6 text-center space-y-6 max-w-md mx-auto"
+      className="flex flex-col items-center py-10 px-6 max-w-md mx-auto space-y-6"
       initial={{ opacity: 0, scale: 0.95 }}
       animate={{ opacity: 1, scale: 1 }}
       transition={{ duration: 0.4 }}
     >
-      <div className="p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20">
-        <Trophy className="w-12 h-12 text-violet-400" />
+      <div className="p-4 rounded-2xl bg-surface-1 border border-border">
+        <Trophy className="w-10 h-10 text-amber" />
       </div>
 
-      <div>
-        <h2 className={`text-3xl font-bold mb-1 ${grade.color}`}>{grade.label}</h2>
-        <p className="text-zinc-400 text-sm">Quiz complete</p>
+      <div className="text-center">
+        <h2 className={`text-2xl font-bold mb-1 ${grade.color}`}>{grade.label}</h2>
+        <p className="text-foreground-subtle text-sm">Quiz complete</p>
       </div>
 
-      {/* Score circle */}
-      <div className="relative w-32 h-32">
+      {/* Score ring */}
+      <div className="relative w-28 h-28">
         <svg className="w-full h-full -rotate-90" viewBox="0 0 100 100">
-          <circle cx="50" cy="50" r="42" fill="none" stroke="rgba(255,255,255,0.05)" strokeWidth="8" />
+          <circle cx="50" cy="50" r="42" fill="none" stroke="hsl(0 0% 14%)" strokeWidth="8" />
           <motion.circle
             cx="50" cy="50" r="42" fill="none"
-            stroke="#8b5cf6"
+            stroke="hsl(245 85% 62%)"
             strokeWidth="8"
             strokeLinecap="round"
-            strokeDasharray={`${2 * Math.PI * 42}`}
-            initial={{ strokeDashoffset: 2 * Math.PI * 42 }}
-            animate={{ strokeDashoffset: 2 * Math.PI * 42 * (1 - percentage / 100) }}
+            strokeDasharray={circumference}
+            initial={{ strokeDashoffset: circumference }}
+            animate={{ strokeDashoffset: circumference * (1 - percentage / 100) }}
             transition={{ duration: 1.2, ease: 'easeOut' }}
           />
         </svg>
         <div className="absolute inset-0 flex flex-col items-center justify-center">
-          <span className="text-3xl font-bold text-white">{percentage}%</span>
-          <span className="text-xs text-zinc-500">{score}/{total}</span>
+          <span className="text-2xl font-bold text-foreground">{percentage}%</span>
+          <span className="text-xs text-foreground-subtle tabular-nums">{score}/{total}</span>
         </div>
       </div>
 
-      {/* Stars */}
-      <div className="flex gap-1">
-        {[0, 1, 2].map(i => (
-          <Star
-            key={i}
-            className={`w-6 h-6 ${i < grade.stars ? 'text-yellow-400 fill-yellow-400' : 'text-zinc-700'}`}
-          />
-        ))}
-      </div>
+      {/* Performance breakdown */}
+      {wrongTopics.length > 0 && (
+        <div className="w-full p-4 rounded-xl bg-surface-1 border border-border space-y-3">
+          <p className="text-xs font-semibold text-foreground-muted uppercase tracking-wider">Concepts to Review</p>
+          <ul className="space-y-1.5">
+            {wrongTopics.map((topic, i) => (
+              <li key={i} className="flex items-center gap-2 text-sm text-foreground-muted">
+                <span className="w-1.5 h-1.5 rounded-full bg-red-400/60 flex-shrink-0" />
+                {topic}
+              </li>
+            ))}
+          </ul>
+          {onSwitchToFlashcards && (
+            <button
+              onClick={onSwitchToFlashcards}
+              className="flex items-center gap-1.5 text-xs text-primary hover:text-primary/80 transition-colors mt-2"
+            >
+              <Layers className="w-3 h-3" />
+              Review flashcards <ArrowRight className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+      )}
 
-      <ShinyButton
-        id="retake-quiz-button"
-        onClick={reset}
-        className="flex items-center gap-2"
-      >
-        <RefreshCw className="w-4 h-4" />
-        Retake Quiz
-      </ShinyButton>
+      <div className="flex gap-3 w-full">
+        <ShinyButton
+          id="retake-quiz-button"
+          onClick={reset}
+          className="flex-1 flex items-center gap-2 justify-center"
+        >
+          <RefreshCw className="w-4 h-4" />
+          Retake
+        </ShinyButton>
+      </div>
     </motion.div>
   )
 }

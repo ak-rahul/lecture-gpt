@@ -1,89 +1,139 @@
 'use client'
-import { motion, AnimatePresence } from 'framer-motion'
-import { Brain, FileText, CheckCircle } from 'lucide-react'
-import { LoadingDots } from '@/components/shared/LoadingDots'
-import { GradientText } from '@/components/shared/GradientText'
+import { AnimatePresence, motion } from 'framer-motion'
+import { FileText, Layers, FileQuestion, Network, CheckCircle } from 'lucide-react'
 import type { ProcessingStage } from '@/types/session.types'
-
-const stages = [
-  { key: 'parsing', icon: FileText, label: 'Parsing document', color: 'text-blue-400' },
-  { key: 'generating', icon: Brain, label: 'Generating study materials', color: 'text-violet-400' },
-  { key: 'done', icon: CheckCircle, label: 'Almost there!', color: 'text-emerald-400' },
-]
 
 interface ProcessingOverlayProps {
   stage: ProcessingStage
-  message?: string
+  message: string
 }
 
+const orbConfig = [
+  { icon: Layers, color: 'bg-primary/15 border-primary/30 text-primary', delay: 0, angle: 0 },
+  { icon: FileQuestion, color: 'bg-amber/15 border-amber/30 text-amber', delay: 1, angle: 120 },
+  { icon: Network, color: 'bg-teal-500/15 border-teal-500/30 text-teal-400', delay: 2, angle: 240 },
+]
+
 export function ProcessingOverlay({ stage, message }: ProcessingOverlayProps) {
-  const currentStage = stages.find(s => s.key === stage) || stages[0]
-  const Icon = currentStage.icon
+  const visible = stage === 'parsing' || stage === 'generating' || stage === 'done'
 
   return (
     <AnimatePresence>
-      {(stage === 'parsing' || stage === 'generating') && (
+      {visible && (
         <motion.div
-          className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           exit={{ opacity: 0 }}
+          className="fixed inset-0 z-50 flex items-center justify-center bg-black/85 backdrop-blur-xl"
         >
           <motion.div
-            className="text-center px-8 py-12 rounded-3xl bg-white/[0.03] border border-white/10 backdrop-blur-xl max-w-md w-full mx-4"
-            initial={{ scale: 0.9, opacity: 0 }}
-            animate={{ scale: 1, opacity: 1 }}
-            exit={{ scale: 0.9, opacity: 0 }}
+            initial={{ opacity: 0, scale: 0.92, y: 16 }}
+            animate={{ opacity: 1, scale: 1, y: 0 }}
+            exit={{ opacity: 0, scale: 0.92, y: 16 }}
+            transition={{ type: 'spring', damping: 20, stiffness: 300 }}
+            className="gradient-border rounded-2xl p-8 max-w-sm w-full mx-4 flex flex-col items-center gap-6 bg-surface-1"
           >
-            {/* Icon */}
-            <motion.div
-              className="inline-flex p-5 rounded-2xl bg-violet-500/10 border border-violet-500/20 mb-6 pulse-glow"
-              animate={{ rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-            >
-              <Icon className={`w-10 h-10 ${currentStage.color}`} />
-            </motion.div>
+            {/* Stage 1: Parsing */}
+            {stage === 'parsing' && (
+              <>
+                <motion.div
+                  animate={{ y: [0, -4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                  className="p-4 rounded-2xl bg-surface-2 border border-border"
+                >
+                  <FileText className="w-8 h-8 text-foreground-muted" />
+                </motion.div>
+                <div className="text-center">
+                  <p className="font-semibold text-foreground mb-1">{message || 'Reading your lecture...'}</p>
+                  <p className="text-sm text-foreground-subtle">Extracting text from your document</p>
+                </div>
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-foreground-subtle typing-dot" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-foreground-subtle typing-dot" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-foreground-subtle typing-dot" />
+                </div>
+              </>
+            )}
 
-            <h2 className="text-2xl font-bold text-white mb-2">
-              <GradientText>AI at work</GradientText>
-            </h2>
-            
-            <div className="flex items-center justify-center gap-2 text-zinc-400 mb-8">
-              <span>{message || currentStage.label}</span>
-              <LoadingDots />
-            </div>
-
-            {/* Progress steps */}
-            <div className="flex items-center justify-center gap-3">
-              {stages.slice(0, 2).map((s, i) => {
-                const isActive = s.key === stage
-                const isDone = stages.findIndex(st => st.key === stage) > i
-                return (
-                  <div key={s.key} className="flex items-center gap-3">
-                    <div className={`w-2 h-2 rounded-full transition-all duration-500 ${
-                      isDone ? 'bg-emerald-400' : isActive ? 'bg-violet-400 animate-pulse' : 'bg-zinc-700'
-                    }`} />
-                    {i < 1 && <div className="w-12 h-px bg-zinc-700" />}
+            {/* Stage 2: Generating */}
+            {stage === 'generating' && (
+              <>
+                {/* Orbiting icons */}
+                <div className="relative w-24 h-24 flex items-center justify-center">
+                  <div className="absolute w-8 h-8 rounded-xl bg-primary/15 border border-primary/30 flex items-center justify-center z-10">
+                    <Network className="w-4 h-4 text-primary" />
                   </div>
-                )
-              })}
-            </div>
+                  {orbConfig.map((orb, i) => (
+                    <motion.div
+                      key={i}
+                      className="absolute"
+                      animate={{ rotate: 360 }}
+                      transition={{
+                        duration: 3 + i * 0.5,
+                        repeat: Infinity,
+                        ease: 'linear',
+                        delay: orb.delay * 0.3,
+                      }}
+                      style={{ transformOrigin: 'center' }}
+                    >
+                      <motion.div
+                        className={`p-2 rounded-xl border ${orb.color}`}
+                        style={{ transform: `rotate(${orb.angle}deg) translateX(42px) rotate(-${orb.angle}deg)` }}
+                        animate={{ rotate: [0, -360] }}
+                        transition={{
+                          duration: 3 + i * 0.5,
+                          repeat: Infinity,
+                          ease: 'linear',
+                          delay: orb.delay * 0.3,
+                        }}
+                      >
+                        <orb.icon className="w-4 h-4" />
+                      </motion.div>
+                    </motion.div>
+                  ))}
+                </div>
+                <div className="text-center">
+                  <p className="font-semibold text-foreground mb-1">{message || 'Building your study session...'}</p>
+                  <p className="text-sm text-foreground-subtle">Generating flashcards, quiz & mind map in parallel</p>
+                </div>
+                <div className="flex gap-1">
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary typing-dot" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary typing-dot" />
+                  <span className="w-1.5 h-1.5 rounded-full bg-primary typing-dot" />
+                </div>
+              </>
+            )}
 
-            <div className="mt-4 flex flex-col gap-2">
-              {stages.slice(0, 2).map((s, i) => {
-                const isActive = s.key === stage
-                const isDone = stages.findIndex(st => st.key === stage) > i
-                return (
-                  <div key={s.key} className={`flex items-center gap-2 text-xs transition-all ${
-                    isActive ? 'text-white' : isDone ? 'text-emerald-400' : 'text-zinc-600'
-                  }`}>
-                    <s.icon className="w-3 h-3" />
-                    <span>{s.label}</span>
-                    {isDone && <CheckCircle className="w-3 h-3 ml-auto" />}
-                  </div>
-                )
-              })}
-            </div>
+            {/* Stage 3: Done */}
+            {stage === 'done' && (
+              <>
+                <motion.div
+                  initial={{ scale: 0 }}
+                  animate={{ scale: 1 }}
+                  transition={{ type: 'spring', damping: 12, stiffness: 400 }}
+                  className="relative"
+                >
+                  <svg width="64" height="64" viewBox="0 0 64 64">
+                    <motion.circle
+                      cx="32" cy="32" r="28"
+                      fill="none"
+                      stroke="hsl(142 71% 45%)"
+                      strokeWidth="2.5"
+                      strokeLinecap="round"
+                      strokeDasharray="176"
+                      initial={{ strokeDashoffset: 176 }}
+                      animate={{ strokeDashoffset: 0 }}
+                      transition={{ duration: 0.6, ease: 'easeOut' }}
+                    />
+                  </svg>
+                  <CheckCircle className="absolute inset-0 m-auto w-8 h-8 text-emerald-400" />
+                </motion.div>
+                <div className="text-center">
+                  <p className="font-semibold text-emerald-400 mb-1">Ready!</p>
+                  <p className="text-sm text-foreground-subtle">Opening your study session...</p>
+                </div>
+              </>
+            )}
           </motion.div>
         </motion.div>
       )}

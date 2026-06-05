@@ -1,29 +1,28 @@
-import type { Metadata } from 'next'
-import localFont from 'next/font/local'
 import './globals.css'
-import { Toaster } from 'sonner'
+import type { Metadata } from 'next'
+import { Inter, JetBrains_Mono } from 'next/font/google'
+import { Instrument_Serif } from 'next/font/google'
 
-const geistSans = localFont({
-  src: './fonts/GeistVF.woff',
+const inter = Inter({
   variable: '--font-sans',
-  weight: '100 900',
+  subsets: ['latin'],
 })
 
-const geistMono = localFont({
-  src: './fonts/GeistMonoVF.woff',
+const jetbrainsMono = JetBrains_Mono({
   variable: '--font-mono',
-  weight: '100 900',
+  subsets: ['latin'],
+})
+
+const instrumentSerif = Instrument_Serif({
+  weight: '400',
+  style: ['normal', 'italic'],
+  variable: '--font-display',
+  subsets: ['latin'],
 })
 
 export const metadata: Metadata = {
-  title: 'LectureGPT — AI Study Brain',
-  description: 'Transform lecture PDFs and YouTube transcripts into interactive study sessions with AI-powered flashcards, quizzes, and mind maps. Powered by Groq + Llama 3.3.',
-  keywords: ['AI study', 'lecture notes', 'flashcards', 'quiz generator', 'mind map', 'Groq', 'LLM'],
-  openGraph: {
-    title: 'LectureGPT — AI Study Brain',
-    description: 'Turn any lecture into your study brain in under 60 seconds.',
-    type: 'website',
-  },
+  title: 'LectureGPT',
+  description: 'Turn Any Lecture Into Your Study Brain',
 }
 
 export default function RootLayout({
@@ -33,19 +32,8 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en" className="dark">
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased bg-background text-foreground`}>
+      <body className={`${inter.variable} ${jetbrainsMono.variable} ${instrumentSerif.variable} font-sans bg-background text-foreground antialiased`}>
         {children}
-        <Toaster
-          theme="dark"
-          position="bottom-right"
-          toastOptions={{
-            style: {
-              background: 'hsl(240 10% 5%)',
-              border: '1px solid hsl(240 3.7% 15.9%)',
-              color: 'white',
-            },
-          }}
-        />
       </body>
     </html>
   )

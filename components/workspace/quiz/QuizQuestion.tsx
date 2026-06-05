@@ -41,13 +41,34 @@ export function QuizQuestion({ question, onNext }: QuizQuestionProps) {
 
   const handleShortAnswerSubmit = async () => {
     if (!shortAnswer.trim() || question.type !== 'short_answer') return
+    
+    // BUG FIX 7: Heuristic scoring against key_points
+    const answerLower = shortAnswer.toLowerCase()
+    let pointsMatched = 0
+    question.key_points.forEach(point => {
+      if (answerLower.includes(point.toLowerCase())) {
+        pointsMatched++
+      }
+    })
+    
+    // Scale points to 0-2 score based on ratio
+    const ratio = pointsMatched / Math.max(question.key_points.length, 1)
+    let score = 0
+    if (ratio >= 0.8) score = 2
+    else if (ratio >= 0.4) score = 1
+    
+    let message = ''
+    if (score === 2) message = `Excellent! Sample answer: ${question.sample_answer}`
+    else if (score === 1) message = `Good, but missing some details. Sample answer: ${question.sample_answer}`
+    else message = `Needs more detail. Sample answer: ${question.sample_answer}`
+
     setSubmitted(true)
-    setFeedback({ score: 1, message: `Sample answer: ${question.sample_answer}` })
+    setFeedback({ score, message })
     submitAnswer({
       questionId: question.id,
       answer: shortAnswer,
-      score: 1,
-      feedback: question.sample_answer,
+      score,
+      feedback: message,
     })
   }
 

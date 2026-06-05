@@ -2,7 +2,6 @@
 import { useState, use } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
-import { useEffect } from 'react'
 import { SessionHeader } from '@/components/workspace/SessionHeader'
 import { TabNavigation, type WorkspaceTab } from '@/components/workspace/TabNavigation'
 import { ChatPanel } from '@/components/workspace/chat/ChatPanel'
@@ -10,8 +9,6 @@ import { FlashcardPanel } from '@/components/workspace/flashcards/FlashcardPanel
 import { QuizPanel } from '@/components/workspace/quiz/QuizPanel'
 import { MindMapPanel } from '@/components/workspace/mindmap/MindMapPanel'
 import { useSession } from '@/hooks/useSession'
-import { useFlashcardStore } from '@/store/flashcard.store'
-import { useQuizStore } from '@/store/quiz.store'
 import { Loader2 } from 'lucide-react'
 
 interface StudyPageProps {
@@ -24,16 +21,7 @@ export default function StudyPage({ params }: StudyPageProps) {
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('chat')
   const { session } = useSession(sessionId)
 
-  // Hydrate stores when session loads
-  const { setCards } = useFlashcardStore()
-  const { setQuestions } = useQuizStore()
-
-  useEffect(() => {
-    if (session) {
-      if (session.flashcards?.length) setCards(session.flashcards)
-      if (session.questions?.length) setQuestions(session.questions)
-    }
-  }, [session, setCards, setQuestions])
+  // Session hydration is now handled by useSession hook
 
   if (!session) {
     return (

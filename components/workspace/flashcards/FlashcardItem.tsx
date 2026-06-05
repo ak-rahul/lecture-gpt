@@ -1,63 +1,80 @@
 'use client'
-import { motion } from 'framer-motion'
 import { cn } from '@/lib/utils'
 import type { Flashcard } from '@/types/flashcard.types'
-
-const DIFFICULTY_COLORS = {
-  easy: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20',
-  medium: 'bg-yellow-500/10 text-yellow-400 border-yellow-500/20',
-  hard: 'bg-red-500/10 text-red-400 border-red-500/20',
-}
 
 interface FlashcardItemProps {
   card: Flashcard
   isFlipped: boolean
-  onClick: () => void
+  onFlip?: () => void
+  onClick?: () => void
+  current?: number
+  total?: number
 }
 
-export function FlashcardItem({ card, isFlipped, onClick }: FlashcardItemProps) {
+const difficultyConfig = {
+  easy:   { label: 'Easy',   class: 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20' },
+  medium: { label: 'Medium', class: 'bg-amber/10 text-amber border-amber/20' },
+  hard:   { label: 'Hard',   class: 'bg-red-500/10 text-red-400 border-red-500/20' },
+}
+
+export function FlashcardItem({ card, isFlipped, onFlip, onClick, current, total }: FlashcardItemProps) {
+  const diff = difficultyConfig[card.difficulty]
+
   return (
-    <div
-      id="flashcard-item"
-      className="flashcard-scene w-full cursor-pointer select-none"
-      style={{ height: '280px' }}
-      onClick={onClick}
+    <div className="flashcard-scene w-full cursor-pointer" onClick={onClick || onFlip} role="button" tabIndex={0}
+      onKeyDown={(e) => { if (e.key === ' ' || e.key === 'Enter') { e.preventDefault(); if (onClick) onClick(); else if (onFlip) onFlip(); } }}
+      aria-label={isFlipped ? 'Flip card to front' : 'Flip card to see answer'}
     >
-      <motion.div
-        className="flashcard-inner w-full h-full relative"
-        style={{ transformStyle: 'preserve-3d' }}
-        animate={{ rotateY: isFlipped ? 180 : 0 }}
-        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
-      >
+      <div className={`flashcard-inner w-full min-h-[240px] relative ${isFlipped ? 'flipped' : ''}`}>
         {/* Front */}
-        <div
-          className={cn(
-            'flashcard-face absolute inset-0 flex flex-col items-center justify-center p-8',
-            'rounded-2xl border border-white/10 bg-white/[0.04]',
-            'text-center'
-          )}
-        >
-          <div className={`px-2 py-0.5 rounded-full text-xs border mb-4 ${DIFFICULTY_COLORS[card.difficulty]}`}>
-            {card.difficulty}
+        <div className="flashcard-face absolute inset-0 rounded-2xl bg-surface-1 border border-border p-6 flex flex-col">
+          {/* Top indicators */}
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-xs text-foreground-subtle tabular-nums">
+              {current !== undefined && total !== undefined ? `${current} / ${total}` : ''}
+            </span>
+            <span className={cn('text-[10px] font-semibold px-2 py-0.5 rounded-full border', diff.class)}>
+              {diff.label}
+            </span>
           </div>
-          <p className="text-xs text-zinc-500 mb-3 font-medium uppercase tracking-wider">{card.topic}</p>
-          <p className="text-lg font-medium text-white leading-relaxed">{card.front}</p>
-          <p className="text-xs text-zinc-600 mt-6">Click to reveal answer</p>
+
+          {/* Accent bar */}
+          <div className="w-10 h-0.5 bg-gradient-to-r from-primary to-transparent rounded-full mb-5" />
+
+          {/* Question */}
+          <div className="flex-1 flex items-center justify-center">
+            <p className="text-base font-medium text-foreground text-center leading-relaxed">{card.front}</p>
+          </div>
+
+          {/* Hint */}
+          <div className="mt-4 flex items-center justify-center gap-1.5">
+            <kbd className="text-[10px] px-1.5 py-0.5 rounded border border-border bg-surface-2 text-foreground-subtle font-mono">Space</kbd>
+            <span className="text-[10px] text-foreground-subtle">to flip</span>
+          </div>
         </div>
 
         {/* Back */}
-        <div
-          className={cn(
-            'flashcard-face flashcard-back absolute inset-0 flex flex-col items-center justify-center p-8',
-            'rounded-2xl border border-violet-500/20 bg-violet-950/20',
-            'text-center'
-          )}
-        >
-          <div className="w-8 h-0.5 bg-violet-500/40 rounded-full mb-5" />
-          <p className="text-base text-zinc-200 leading-relaxed">{card.back}</p>
-          <p className="text-xs text-zinc-600 mt-6">Click to flip back</p>
+        <div className="flashcard-face flashcard-back absolute inset-0 rounded-2xl bg-surface-2 border border-primary/20 p-6 flex flex-col">
+          <div className="flex items-center justify-between mb-4">
+            <span className="font-mono text-xs text-foreground-subtle tabular-nums">{current} / {total}</span>
+            <span className="text-[10px] font-semibold px-2 py-0.5 rounded-full bg-primary/10 border border-primary/20 text-primary">
+              Answer
+            </span>
+          </div>
+
+          <div className="w-10 h-0.5 bg-gradient-to-r from-primary to-transparent rounded-full mb-5" />
+
+          <div className="flex-1 flex items-start justify-center">
+            <p className="text-sm text-foreground leading-relaxed text-center">{card.back}</p>
+          </div>
+
+          <div className="mt-4">
+            <p className="text-[11px] text-foreground-subtle text-center">
+              Topic: <span className="text-foreground-muted">{card.topic}</span>
+            </p>
+          </div>
         </div>
-      </motion.div>
+      </div>
     </div>
   )
 }
