@@ -25,19 +25,20 @@ export async function POST(req: NextRequest) {
     const arrayBuffer = await file.arrayBuffer()
     const buffer = Buffer.from(arrayBuffer)
 
-    // Dynamic import to avoid issues with next.js edge runtime
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const pdfParseModule = await import('pdf-parse') as any
-    const pdfParse = pdfParseModule.default || pdfParseModule
-    const data = await pdfParse(buffer)
+    const { PDFParse } = await import('pdf-parse')
+    const parser = new PDFParse({ data: buffer })
+    
+    const info = await parser.getInfo()
+    const result = await parser.getText()
+    await parser.destroy()
 
-    const rawText = cleanText(data.text)
+    const rawText = cleanText(result.text)
     const title = extractTitle(rawText) || file.name.replace('.pdf', '')
     const wordCount = countWords(rawText)
 
     return NextResponse.json({
       text: rawText,
-      pageCount: data.numpages,
+      pageCount: info.total,
       wordCount,
       title,
     })

@@ -1,5 +1,5 @@
 'use client'
-import { useState, use } from 'react'
+import { useState } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { SessionHeader } from '@/components/workspace/SessionHeader'
@@ -12,11 +12,11 @@ import { useSession } from '@/hooks/useSession'
 import { Loader2 } from 'lucide-react'
 
 interface StudyPageProps {
-  params: Promise<{ sessionId: string }>
+  params: { sessionId: string }
 }
 
 export default function StudyPage({ params }: StudyPageProps) {
-  const { sessionId } = use(params)
+  const { sessionId } = params
   const router = useRouter()
   const [activeTab, setActiveTab] = useState<WorkspaceTab>('chat')
   const { session } = useSession(sessionId)
