@@ -52,16 +52,15 @@ function UploadCard() {
         pageCount = data.pageCount
         documentTitle = selectedFile.name.replace('.pdf', '')
       } else {
-        throw new Error('YouTube transcripts are not fully implemented in this MVP yet. Please upload a PDF.')
-        // const res = await fetch('/api/fetch-transcript', {
-        //   method: 'POST',
-        //   headers: { 'Content-Type': 'application/json' },
-        //   body: JSON.stringify({ url: youtubeUrl }),
-        // })
-        // if (!res.ok) throw new Error('Transcript fetch failed')
-        // const data = await res.json()
-        // rawText = cleanText(data.text)
-        // documentTitle = data.title || 'YouTube Lecture'
+        const res = await fetch('/api/fetch-transcript', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ url: youtubeUrl }),
+        })
+        if (!res.ok) throw new Error('Transcript fetch failed')
+        const data = await res.json()
+        rawText = cleanText(data.text)
+        documentTitle = data.title || 'YouTube Lecture'
       }
 
       if (!rawText || rawText.length < 100) {
