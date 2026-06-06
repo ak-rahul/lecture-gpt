@@ -17,7 +17,7 @@ export function Navbar() {
         {/* Right */}
         <div className="flex items-center gap-2">
           <a
-            href="https://github.com"
+            href="https://github.com/ak-rahul/lecture-gpt"
             target="_blank"
             rel="noopener noreferrer"
             aria-label="View source on GitHub"
@@ -28,7 +28,7 @@ export function Navbar() {
           <div className="h-4 w-px bg-border mx-1" />
           <div className="badge badge-neutral">
             <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" style={{ animation: 'pulse-dot 2s ease-in-out infinite' }} />
-            Groq
+            NVIDIA NIM
           </div>
         </div>
       </div>
