@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback, useRef } from 'react'
+import { useState, useCallback, useRef, useEffect } from 'react'
 import { useRouter } from 'next/navigation'
 import { motion, AnimatePresence } from 'framer-motion'
 import { FileText, Link2 } from 'lucide-react'
@@ -69,32 +69,35 @@ function UploadCard() {
       }
 
       setProcessingStage('generating', 'Building your study session...')
-
       const textForGeneration = chunkText(rawText, MAX_CHARS_FOR_GENERATION)
 
-      const [flashRes, quizRes, mindRes] = await Promise.all([
-        fetch('/api/generate/flashcards', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: textForGeneration }),
-        }),
-        fetch('/api/generate/questions', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: textForGeneration }),
-        }),
-        fetch('/api/generate/mindmap', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ text: textForGeneration }),
-        }),
-      ])
+      setProcessingStage('generating', 'Generating flashcards...')
+      const flashcardsRes = await fetch('/api/generate/flashcards', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textForGeneration, count: 15 }),
+      })
+      const flashData = flashcardsRes.ok ? await flashcardsRes.json() : {}
 
-      const [flashData, quizData, mindData] = await Promise.all([
-        flashRes.json(),
-        quizRes.json(),
-        mindRes.json(),
-      ])
+      setProcessingStage('generating', 'Building quiz questions...')
+      await new Promise(r => setTimeout(r, 2000)) // 2s gap
+      const quizRes = await fetch('/api/generate/questions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textForGeneration }),
+      })
+      const quizData = quizRes.ok ? await quizRes.json() : {}
+
+      setProcessingStage('generating', 'Creating mind map...')
+      await new Promise(r => setTimeout(r, 2000)) // 2s gap
+      const mindmapRes = await fetch('/api/generate/mindmap', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ text: textForGeneration }),
+      })
+      const mindData = mindmapRes.ok 
+        ? await mindmapRes.json() 
+        : { root: { id: 'n0', label: documentTitle, description: '', depth: 0 }, nodes: [], edges: [] }
 
       const sessionId = generateId()
       const session: LectureSession = {
@@ -202,19 +205,18 @@ function UploadCard() {
             <span>Generate Study Session →</span>
           )}
         </ShinyButton>
-        {selectedFile && (
-          <p className="text-xs text-foreground-subtle text-center">
-            {selectedFile.name}
-          </p>
-        )}
-        <p className="text-xs text-foreground-subtle text-center">No account needed · Free to use</p>
+        <p className="text-xs text-foreground-subtle text-center mt-2">No account needed · Free to use</p>
       </div>
     </div>
   )
 }
 
 export function HeroSection() {
-  const { processingStage, processingMessage } = useSessionStore()
+  const { processingStage, processingMessage, setProcessingStage } = useSessionStore()
+
+  useEffect(() => {
+    setProcessingStage('idle', '')
+  }, [setProcessingStage])
 
   return (
     <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-20 pb-16 overflow-hidden hero-glow noise">
@@ -222,7 +224,7 @@ export function HeroSection() {
 
       {/* Badge */}
       <div className="badge badge-accent mb-8 animate-fade-up opacity-0">
-        ✦ Built for QuAnHack 2026
+        ✦ AI-Powered Study Assistant
       </div>
 
       {/* Headline */}

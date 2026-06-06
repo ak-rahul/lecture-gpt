@@ -23,8 +23,11 @@ export const useQuizStore = create<QuizStore>((set, get) => ({
   submitAnswer: (answer) => {
     const { answers, score } = get()
     const newAnswers = { ...answers, [answer.questionId]: answer }
-    const newScore = answer.isCorrect ? score + 1 : (answer.score !== undefined ? score + answer.score / 2 : score)
-    set({ answers: newAnswers, score: newScore })
+    // MCQ: 1 point for correct. Short answer: score is 0, 1, or 2 (map to 0, 0.5, 1)
+    const points = answer.isCorrect === true
+      ? 1
+      : answer.score === 2 ? 1 : answer.score === 1 ? 0.5 : 0
+    set({ answers: newAnswers, score: score + points })
   },
   next: () => {
     const { currentIndex, questions } = get()

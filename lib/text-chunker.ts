@@ -1,4 +1,4 @@
-export const MAX_CHARS_FOR_GENERATION = 12_000
+export const MAX_CHARS_FOR_GENERATION = 20_000
 export const MAX_CHARS_FOR_CHAT = 12_000
 
 export function chunkText(text: string, maxChars: number = MAX_CHARS_FOR_GENERATION): string {

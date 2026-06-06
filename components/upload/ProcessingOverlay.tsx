@@ -30,7 +30,8 @@ export function ProcessingOverlay({ stage, message }: ProcessingOverlayProps) {
             animate={{ opacity: 1, scale: 1, y: 0 }}
             exit={{ opacity: 0, scale: 0.92, y: 16 }}
             transition={{ type: 'spring', damping: 20, stiffness: 300 }}
-            className="text-center px-8 py-10 rounded-2xl card max-w-xs w-full mx-4 shadow-float flex flex-col items-center"
+            className="text-center px-8 py-12 rounded-2xl max-w-md w-full mx-4 shadow-2xl flex flex-col items-center"
+            style={{ background: '#141414', border: '1px solid #2a2a2a' }}
           >
             {/* Icon section */}
             {isDone ? (

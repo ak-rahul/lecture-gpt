@@ -1,13 +1,25 @@
 import type { LectureSession } from '@/types/session.types'
 
+import * as LZString from 'lz-string'
+
 const SESSION_KEY = 'lecturegpt_sessions'
 const MAX_SESSIONS = 5
+
+function replacer(key: string, value: unknown) {
+  if (value instanceof Set) return Array.from(value)
+  return value
+}
 
 export function getSessions(): Record<string, LectureSession> {
   if (typeof window === 'undefined') return {}
   try {
     const raw = localStorage.getItem(SESSION_KEY)
-    return raw ? JSON.parse(raw) : {}
+    if (!raw) return {}
+    const decompressed = LZString.decompressFromUTF16(raw)
+    if (!decompressed) {
+      try { return JSON.parse(raw) } catch { return {} }
+    }
+    return JSON.parse(decompressed)
   } catch {
     return {}
   }
@@ -30,7 +42,8 @@ export function saveSession(session: LectureSession): void {
       delete sessions[oldest]
     }
     
-    localStorage.setItem(SESSION_KEY, JSON.stringify(sessions))
+    const compressed = LZString.compressToUTF16(JSON.stringify(sessions, replacer))
+    localStorage.setItem(SESSION_KEY, compressed)
   } catch (e) {
     console.error('Failed to save session:', e)
   }

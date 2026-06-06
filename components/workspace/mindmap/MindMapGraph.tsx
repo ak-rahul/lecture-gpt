@@ -260,13 +260,13 @@ export function MindMapGraph({ graph }: MindMapGraphProps) {
                     rx={rx}
                     fill={
                       isRoot ? 'url(#rootGrad)'
-                        : node.depth === 1 ? 'hsl(0 0% 13.5%)'
+                        : node.depth === 1 ? 'hsl(var(--surface-2))'
                         : 'hsl(0 0% 10%)'
                     }
                     stroke={
-                      isRoot ? 'rgba(91,91,214,0.6)'
+                      isRoot ? 'rgba(249, 115, 22, 0.4)'
                         : isHovered ? 'hsl(0 0% 22%)'
-                        : node.depth === 1 ? 'rgba(91,91,214,0.2)'
+                        : node.depth === 1 ? 'rgba(249, 115, 22, 0.2)'
                         : 'hsl(0 0% 14%)'
                     }
                     strokeWidth={isRoot ? 1.5 : 1}
@@ -284,7 +284,7 @@ export function MindMapGraph({ graph }: MindMapGraphProps) {
                     fontWeight={isRoot ? '700' : node.depth === 1 ? '500' : '400'}
                     fill={
                       isRoot ? 'white'
-                        : node.depth === 1 ? 'hsl(245 85% 78%)'
+                        : node.depth === 1 ? 'hsl(var(--accent-text))'
                         : 'hsl(0 0% 60%)'
                     }
                     style={{ pointerEvents: 'none', userSelect: 'none' }}
@@ -298,8 +298,8 @@ export function MindMapGraph({ graph }: MindMapGraphProps) {
             {/* Defs */}
             <defs>
               <linearGradient id="rootGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                <stop offset="0%" stopColor="hsl(245 85% 58%)" />
-                <stop offset="100%" stopColor="hsl(262 70% 50%)" />
+                <stop offset="0%" stopColor="#fb923c" />
+                <stop offset="100%" stopColor="#ea580c" />
               </linearGradient>
             </defs>
           </g>

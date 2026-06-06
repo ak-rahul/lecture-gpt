@@ -1,3 +1,4 @@
+import { memo } from 'react'
 import { MarkdownRenderer } from '@/components/shared/MarkdownRenderer'
 import type { Message } from '@/types/chat.types'
 
@@ -5,7 +6,7 @@ interface ChatMessageProps {
   message: Message
 }
 
-export function ChatMessage({ message }: ChatMessageProps) {
+export const ChatMessage = memo(function ChatMessage({ message }: ChatMessageProps) {
   const isUser = message.role === 'user'
 
   if (isUser) {
@@ -29,4 +30,4 @@ export function ChatMessage({ message }: ChatMessageProps) {
       </div>
     </div>
   )
-}
+})

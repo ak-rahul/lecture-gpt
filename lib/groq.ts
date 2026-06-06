@@ -19,9 +19,12 @@ export async function groqWithRetry<T>(fn: () => Promise<T>, retries = 3): Promi
     try {
       return await fn()
     } catch (err: unknown) {
-      const error = err as { status?: number; message?: string }
+      const error = err as { status?: number; message?: string; headers?: Record<string, string> }
       if (error?.status === 429 && i < retries - 1) {
-        await new Promise(r => setTimeout(r, Math.pow(2, i) * 500))
+        // Respect Retry-After header if present
+        const retryAfter = error.headers?.['retry-after']
+        const waitMs = retryAfter ? parseInt(retryAfter) * 1000 : Math.pow(2, i) * 1000
+        await new Promise(r => setTimeout(r, waitMs))
         continue
       }
       throw err

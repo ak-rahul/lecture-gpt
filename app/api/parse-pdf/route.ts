@@ -29,7 +29,11 @@ export async function POST(req: NextRequest) {
     const parser = new PDFParse({ data: buffer })
     
     const info = await parser.getInfo()
-    const result = await parser.getText()
+    const parsePromise = parser.getText()
+    const timeoutPromise = new Promise<never>((_, reject) =>
+      setTimeout(() => reject(new Error('PDF parsing timed out')), 30_000)
+    )
+    const result = await Promise.race([parsePromise, timeoutPromise])
     await parser.destroy()
 
     const rawText = cleanText(result.text)

@@ -2,7 +2,7 @@
 
 > Transform any lecture PDF into a full interactive study session in under 60 seconds.
 
-**Built for QuAnHack 2026 | AI Workflow Challenge**
+**An AI Workflow Application**
 
 [![Built with Groq](https://img.shields.io/badge/Powered%20by-Groq-orange)](https://groq.com)
 [![Next.js 14](https://img.shields.io/badge/Next.js-14-black)](https://nextjs.org)
@@ -97,4 +97,4 @@ vercel --prod
 
 ## License
 
-MIT — Built with ❤️ for QuAnHack 2026
+MIT License

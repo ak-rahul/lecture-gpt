@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { groq, MODELS } from '@/lib/groq'
+import { streamCompletion } from '@/lib/ai-provider'
 import { chatSystemPrompt } from '@/lib/prompts'
 import { chunkText, MAX_CHARS_FOR_CHAT } from '@/lib/text-chunker'
 
@@ -17,14 +17,11 @@ export async function POST(req: NextRequest) {
     const safeText = chunkText(lectureText, MAX_CHARS_FOR_CHAT)
     const systemPrompt = chatSystemPrompt(safeText, documentTitle || 'Lecture Document')
 
-    const stream = await groq.chat.completions.create({
-      model: MODELS.FAST,
-      messages: [
-        { role: 'system', content: systemPrompt },
-        ...messages,
-      ],
-      stream: true,
-      max_tokens: 1024,
+    const textStream = await streamCompletion({
+      messages,
+      systemPrompt,
+      model: 'fast',
+      maxTokens: 1024,
       temperature: 0.3,
     })
 
@@ -32,8 +29,7 @@ export async function POST(req: NextRequest) {
     const readable = new ReadableStream({
       async start(controller) {
         try {
-          for await (const chunk of stream) {
-            const text = chunk.choices[0]?.delta?.content || ''
+          for await (const text of textStream) {
             if (text) {
               controller.enqueue(encoder.encode(`data: ${JSON.stringify({ text })}\n\n`))
             }

@@ -13,8 +13,7 @@ export function Footer() {
             </span>
           </div>
           <p className="text-sm text-zinc-500">
-            Built with ❤ for{' '}
-            <span className="text-violet-400 font-medium">QuAnHack 2026</span>
+            Built with ❤ 
             {' '}·{' '}Powered by{' '}
             <span className="text-white font-medium">Groq</span>
             {' '}+{' '}
